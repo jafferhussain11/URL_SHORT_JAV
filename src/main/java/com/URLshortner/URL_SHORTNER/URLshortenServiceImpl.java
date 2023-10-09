@@ -1,12 +1,9 @@
 package com.URLshortner.URL_SHORTNER;
 
-import com.opencsv.CSVWriter;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -23,11 +20,16 @@ public class URLshortenServiceImpl implements URLshortenService {
     @Autowired
     private FileReadWriteService fileReadWriteService;
 
+    @Autowired
+    private UrlMapService urlMapService;
+
     static long counter;
     private static String base62 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     @PostConstruct
     public void initialize() {
+
+        //read counter from file
         long readCount= fileReadWriteService.readCounter();
         System.out.println("readCount: "+readCount);
         if(readCount == 0) {
@@ -35,7 +37,17 @@ public class URLshortenServiceImpl implements URLshortenService {
             fileReadWriteService.writeCounter(counter);
         } else {
             counter = readCount;
+            //init map
+
+            try {
+                List<String[]> records = csvReaderService.getAllRecords();
+                urlMapService.insertAllinMap(records);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
+
+
 
     }
     @Override
@@ -46,9 +58,12 @@ public class URLshortenServiceImpl implements URLshortenService {
         String[] record = {shortUrl,longUrl};
         try {
             //check if long url already present
-            if(!csvReaderService.checkIfLongUrlPresent(longUrl)){
-                csvWriterService.writeDataToCsv(record); //
+            if(!urlMapService.checkIfLongUrlPresent(longUrl)){
+                csvWriterService.writeDataToCsv(record);
+                //write record in map
+                urlMapService.insertOneInMap(shortUrl,longUrl);
             }else{
+                System.out.println("duplicate long url");
                 return null;
             }
             counter++;
@@ -66,38 +81,13 @@ public class URLshortenServiceImpl implements URLshortenService {
 
     }
 
-    @Override
-    public String updateShortUrl(String shortUrl, String longUrl) {
 
-        //search on shorturl and update correspondng long URL
-        try {
-            String[] temp = csvReaderService.getCsvRecord(shortUrl);
-            System.out.println("temp: "+temp[0] + " " + temp[1]);
-            if(!Objects.equals(temp[0], "")){
-                //update long url in csv without creating new record
-                deleteCsvRecord(shortUrl);
-                temp[1] = longUrl;
-                csvWriterService.writeDataToCsv(temp);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
-        return null;
-    }
 
     @Override
     public String getLongUrl(String shortUrl) {
 
-        String longUrl = null;
-        try {
-            String[] temp = csvReaderService.getCsvRecord(shortUrl);
-            longUrl = temp[1];
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return longUrl;
+        return urlMapService.getLongUrl(shortUrl);
+
     }
 
     @Override
@@ -119,28 +109,47 @@ public class URLshortenServiceImpl implements URLshortenService {
         shortUrl.reverse();
         return shortUrl.toString();
     }
+    @Override
+    public boolean updateShortUrl(String shortUrl, String updatedLongUrl) {
 
-    public void deleteCsvRecord(String shortUrl){
+        //search on shorturl and update correspondng long URL
+        if (urlMapService.checkIfShortUrlPresent(shortUrl)) {
 
-        // delete record from csv
-        try {
-            List<String[]> records = csvReaderService.getAllRecords();
-            for(String[] record: records){
-                if(Objects.equals(record[0], shortUrl)){
-                    records.remove(record);
-                    break;
+                try {
+                    deleteCsvRecord(shortUrl);
+                    csvWriterService.writeDataToCsv(new String[]{shortUrl, updatedLongUrl});
+                    urlMapService.insertOneInMap(shortUrl, updatedLongUrl);
+                    return true;
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+
+        }
+        return false;
+    }
+            //to be used in updateShortUrl and deleteShortUrl
+            public void deleteCsvRecord (String shortUrl){
+
+                // delete record from csv
+                try {
+
+                    List<String[]> records = UrlMapService.getRecords();
+                    for (String[] record : records) {
+                        if (Objects.equals(record[0], shortUrl)) {
+                            records.remove(record);
+                            //remove from map
+                            System.out.println("record" + record[0]);
+                            urlMapService.deleteOneFromMap(shortUrl);
+                            csvWriterService.writeAllDataToCsv(records);
+                            break;
+                        }
+                    }
+                    //write to csv
+
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
-            //write to csv
-            csvWriterService.writeAllDataToCsv(records);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
-
-
-    }
-
-
-
-}

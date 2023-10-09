@@ -53,14 +53,14 @@ public class UrlController {
         }
 
     }
-
+    //not working to fix
     @PatchMapping("/update")
-    public String updateUrl(@RequestBody JsonNode jsonNode){
+    public boolean updateUrl(@RequestBody JsonNode jsonNode){
 
         String shortUrl = jsonNode.get("shortUrl").asText();
         String longUrl = jsonNode.get("longUrl").asText();
-        String resp = urlShortenService.updateShortUrl(shortUrl,longUrl);
-        if(resp == null){
+        boolean resp = urlShortenService.updateShortUrl(shortUrl,longUrl);
+        if(!resp){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "URL not present");
         }else {
             return resp;

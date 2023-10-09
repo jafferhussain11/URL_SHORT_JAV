@@ -22,36 +22,33 @@ public class CsvReaderService {
         reader = new CSVReader(new FileReader("src/main/resources/urls.csv"));
     }
 
-    public String[] getCsvRecord(String shortUrl) throws IOException {
-
-            //String[] ans = null;
-            String[] temp;
-            while((temp=reader.readNext())!=null){
-
-                 if(Objects.equals(temp[0], shortUrl)){
-                     return temp;
-                 }
-            }
-            return temp;
-    }
+        //fetch data record from  map instead of CSV
+//    public String[] getCsvRecord(String shortUrl) throws IOException {
+//
+//            //String[] ans = null;
+//            String[] temp;
+//            while((temp=reader.readNext())!=null){
+//
+//                 if(Objects.equals(temp[0], shortUrl)){
+//                     return temp;
+//                 }
+//            }
+//            return temp;
+//    }
 
     public boolean checkIfLongUrlPresent(String longUrl){
 
-        String[] temp;
-        while (true) {
+        String[] record;
+        try {
 
-            try {
-                if (((temp=reader.readNext())!=null)) {
-
-                    if (Objects.equals(temp[1], longUrl)) {
-                        return true;
-                    }
-                }else {
-                    break;
+            while ((record = reader.readNext()) != null) {
+                // Check if the second column (index 1) contains the long URL
+                if (record.length > 1 && record[1].equals(longUrl)) {
+                    return true;
                 }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return false;
 

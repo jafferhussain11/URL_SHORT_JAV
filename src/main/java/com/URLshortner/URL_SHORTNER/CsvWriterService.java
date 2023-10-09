@@ -65,8 +65,14 @@ public class CsvWriterService {
 
     }
     public void writeAllDataToCsv(List<String[]> records) throws IOException {
+
+        //clear the file before writing
+        writer = new CSVWriter(new FileWriter("src/main/resources/urls.csv", false));
+
         //write data to CSV
-        writer.writeAll(records);
+        for(String[] record : records){
+            writer.writeNext(record);
+        }
         writer.flush();
     }
 
