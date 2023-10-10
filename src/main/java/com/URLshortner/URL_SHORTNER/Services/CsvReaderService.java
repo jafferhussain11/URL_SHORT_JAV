@@ -20,20 +20,6 @@ public class CsvReaderService {
         reader = new CSVReader(new FileReader("src/main/resources/urls.csv"));
     }
 
-        //fetch data record from  map instead of CSV
-//    public String[] getCsvRecord(String shortUrl) throws IOException {
-//
-//            //String[] ans = null;
-//            String[] temp;
-//            while((temp=reader.readNext())!=null){
-//
-//                 if(Objects.equals(temp[0], shortUrl)){
-//                     return temp;
-//                 }
-//            }
-//            return temp;
-//    }
-
     public boolean checkIfLongUrlPresent(String longUrl){
 
         String[] record;
@@ -49,7 +35,6 @@ public class CsvReaderService {
             e.printStackTrace();
         }
         return false;
-
     }
 
     public List<String[]> getAllRecords() throws IOException {

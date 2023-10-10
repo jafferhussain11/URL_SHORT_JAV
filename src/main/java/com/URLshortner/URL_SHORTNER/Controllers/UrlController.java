@@ -20,14 +20,12 @@ public class UrlController {
     public String shortenUrl(@RequestBody JsonNode jsonNode){
         //check if JSON is empty
         if(jsonNode.isEmpty()){
-            //System.out.println("JSON is empty!");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "JSON is empty!");
         }
 
         String longUrl = jsonNode.get("longUrl").asText();
         //validate longUrl
         if(longUrl.isEmpty()){
-            //System.out.println("URL must be present And cannot be null!");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "URL must be present And cannot be null!");
         }
 
@@ -44,13 +42,11 @@ public class UrlController {
 
         //validate shortUrl
         if(shortUrl.isEmpty()){
-            System.out.println("URL must be present And cannot be null!");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "URL must be present And cannot be null!");
         }
 
         //redirect to long url
         String redirectLink = urlShortenService.getLongUrl(shortUrl);
-        //System.out.println("long: "+redirectLink);
         try {
             if(redirectLink!= null) response.sendRedirect(redirectLink);
             else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "URL Not Found");
@@ -65,7 +61,6 @@ public class UrlController {
     public boolean updateUrl(@RequestBody JsonNode jsonNode){
 
         if(jsonNode.isEmpty()){
-            System.out.println("JSON is empty!");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "JSON is empty!");
         }
 
@@ -73,7 +68,6 @@ public class UrlController {
         String longUrl = jsonNode.get("longUrl").asText();
 
         if (shortUrl.isEmpty() || longUrl.isEmpty()){
-            System.out.println("URL must be present And cannot be null!");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "URL must be present And cannot be null!");
         }
 

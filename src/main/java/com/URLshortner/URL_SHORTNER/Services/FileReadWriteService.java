@@ -41,21 +41,6 @@ public class FileReadWriteService {
         }
     }
 
-//    public long readCounter() {
-//        try {
-//            int i;
-//            String s ="";
-//            while ((i = fr.read()) != -1) {
-//                s = String.valueOf((char) i);
-//            }
-//            if(s.equals("")) {
-//                return 0;
-//            }
-//            return Long.parseLong(s);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
     public void writeCounter(long counter) {
         try {

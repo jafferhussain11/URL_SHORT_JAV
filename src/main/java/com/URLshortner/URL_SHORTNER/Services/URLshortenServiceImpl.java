@@ -28,7 +28,6 @@ public class URLshortenServiceImpl implements URLshortenService {
     public void initialize() {
         //read counter from file
         long readCount= fileReadWriteService.readCounter();
-        System.out.println("readCount: "+readCount);
         if(readCount == 0) {
             counter = 1;
             fileReadWriteService.writeCounter(counter);
@@ -121,13 +120,12 @@ public class URLshortenServiceImpl implements URLshortenService {
                     if (Objects.equals(record[0], shortUrl)) {
                         records.remove(record);
                         //remove from map
-                        System.out.println("record" + record[0]);
                         urlMapService.deleteOneFromMap(shortUrl);
                         csvWriterService.writeAllDataToCsv(records);
                         break;
                     }
                 }
-        }catch(IOException e) {
+        }catch(IOException e){
                     throw new RuntimeException(e);
             }
     }
