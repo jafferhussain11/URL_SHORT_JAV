@@ -34,12 +34,11 @@
 //}
 
 
-package com.URLshortner.URL_SHORTNER;
+package com.URLshortner.URL_SHORTNER.Services;
 
 import com.opencsv.CSVWriter;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.FileWriter;
 import java.io.IOException;

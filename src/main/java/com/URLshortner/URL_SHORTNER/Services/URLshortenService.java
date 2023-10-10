@@ -1,4 +1,4 @@
-package com.URLshortner.URL_SHORTNER;
+package com.URLshortner.URL_SHORTNER.Services;
 
 public interface URLshortenService {
 

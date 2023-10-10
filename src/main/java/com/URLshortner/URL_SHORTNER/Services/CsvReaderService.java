@@ -1,7 +1,6 @@
-package com.URLshortner.URL_SHORTNER;
+package com.URLshortner.URL_SHORTNER.Services;
 
 import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 public class CsvReaderService {

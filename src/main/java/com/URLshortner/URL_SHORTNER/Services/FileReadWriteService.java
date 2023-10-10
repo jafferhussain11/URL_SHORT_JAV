@@ -1,10 +1,9 @@
-package com.URLshortner.URL_SHORTNER;
+package com.URLshortner.URL_SHORTNER.Services;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 @Component
