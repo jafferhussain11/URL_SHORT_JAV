@@ -29,7 +29,7 @@ public class URLshortenServiceImpl implements URLshortenService {
         //read counter from file
         long readCount= fileReadWriteService.readCounter();
         if(readCount == 0) {
-            counter = 1;
+            counter = 1000000000L;
             fileReadWriteService.writeCounter(counter);
         }else {
             counter = readCount;
@@ -98,7 +98,7 @@ public class URLshortenServiceImpl implements URLshortenService {
     public boolean updateShortUrl(String shortUrl, String updatedLongUrl) {
 
         //search on shorturl and update correspondng long URL
-        if (urlMapService.checkIfShortUrlPresent(shortUrl)) {
+        if (urlMapService.checkIfShortUrlPresent(shortUrl) && !urlMapService.checkIfLongUrlPresent(updatedLongUrl)) {
                 try {
                     deleteCsvRecord(shortUrl);
                     csvWriterService.writeDataToCsv(new String[]{shortUrl, updatedLongUrl});
