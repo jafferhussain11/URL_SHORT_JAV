@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
    @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(Exception e, HttpServletRequest request){
 
-       ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getLocalizedMessage(), request.getRequestURL().toString());
+       ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage(), request.getRequestURL().toString());
        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 

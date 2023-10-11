@@ -17,18 +17,12 @@ public class UrlController {
 
 
     @PostMapping("/shorten")
-    public String shortenUrl(@RequestBody JsonNode jsonNode){
-        //check if JSON is empty
-        if(jsonNode.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "JSON is empty!");
-        }
+    public String shortenUrl(@RequestAttribute String url, @RequestAttribute boolean valid){
 
-        String longUrl = jsonNode.get("longUrl").asText();
-        //validate longUrl
-        if(longUrl.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "URL must be present And cannot be null!");
+        if(!valid){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "JSON cannot be empty or longUrl value must be present!");
         }
-
+        String longUrl = url;
         //call shortenUrl service
         String resp = urlShortenService.shortenUrl(longUrl);
         if(resp == null){
